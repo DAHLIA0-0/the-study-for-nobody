@@ -6,6 +6,73 @@ struct node {
     struct node *next;
 };
 
+struct node *merge(struct node *a,struct node *b){
+       struct node *pa=a;
+       struct node *pb=b;
+       struct node *tail=NULL;
+       struct node *p=NULL;
+       struct node *head=NULL;
+       if(pa==NULL) return pb;
+       if(pb==NULL) return pa;
+       while(pa!=NULL&&pb!=NULL){
+            if(pa->data<=pb->data){
+               p=pa;
+               pa=pa->next;
+            }else{
+               p=pb;
+               pb=pb->next;
+            }
+            if(head==NULL){
+                head=p;
+                tail=p;
+            }else{
+            tail->next=p;
+            tail=p;
+         }
+       }
+
+       if(pa==NULL){
+         tail->next=pb;
+       }else
+         tail->next=pa;
+
+       return head;
+}
+
+int count(struct node *head){
+    int i=0;
+    while(head!=NULL){
+        i++;
+        head=head->next;
+    }
+    return i;
+}
+
+struct node *find(struct node *head,int x){
+       struct node *p=NULL;
+       while(head!=NULL){
+             if(head->data==x){
+                p=head;
+                break;
+             }
+             head=head->next;
+       }
+       return p;
+}
+
+struct node *reverse(struct node *head) {
+    struct node *head2 = NULL;   /* 新链头，初始空 */
+    struct node *p = head;       /* 从原链头开始摘 */
+    struct node *q = NULL;       /* 用来记"下一个" */
+    while (p != NULL) {
+        q = p->next;      /* ① 先记下原链的下一个 */
+        p->next = head2; /* ② 把 p 头插到新链最前 */
+        head2 = p;   /* ③ 更新新链头 */
+        p = q;       /* ④ p 回到原链的下一个（继续摘）*/
+    }
+    return head2;         /* 返回新链头（反转后的头）*/
+}
+
 void destroy(struct node *head){
      struct node *cur=NULL;
      struct node *p = head;
@@ -94,8 +161,8 @@ void print(struct node *head) {
 }
 
 int main() {
-    struct node *headA, *headB, *headC ,*headD;
-    int n1, n2,add;
+    struct node *headA, *headB, *headC ,*headD,*thefind,*combine;
+    int n1, n2,add,fin;
 
     printf("请输入链表A的结点个数：");
     scanf("%d", &n1);
@@ -123,7 +190,22 @@ int main() {
     headD=insertHead(headD);  //这一行是否赋值重要吗，如果没有的话也是一样的结果？
     printf("\n头部插入后:");
     print(headD);
+
+    headD=reverse(headD);
+    printf("\n反转链表后:");
+    print(headD);
     
+    printf("结点一共有%d个\n",count(headD));
+    printf("请输入要找的结点:\n");
+    scanf("%d",&fin);
+    thefind=find(headD,fin);
+    if(thefind==NULL)
+    printf("链表中没有该数据\n");
+    else
+    printf("找到了该数据，是%d",thefind->data);
+
+    combine=merge(*headA,*headB);
+
     destroy(headD);
 
     return 0;
